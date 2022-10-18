@@ -1,0 +1,26 @@
+#!/bin/zsh
+
+tmpDir=/tmp/nmdump/
+searchDir=/opt/NetworkMiner/AssembledFiles/
+# searchDir=$HOME/test/
+# List of file extensions to copy
+extList=('zip' 'exe' 'pdf' 'docxm' 'dotm' 'xlsm' 'xltm' 'pptm' 'potm')
+
+# Create a regex for find
+joinExt=${"${extList[*]}"// /'\|'}
+regEx=".*\.\("$joinExt"\)"
+
+# Recreate temp dir
+rm -rf $tmpDir
+mkdir $tmpDir
+
+echo 'Copying file with extensions:' '.'${"${extList[*]}"// /' .'}
+# Copy files of interests from Network Miner dumps and zip it into home folder
+find $searchDir -iregex $regEx -exec cp -prv '{}' $tmpDir ';'
+
+# Zip the folder
+zip -j ./netminerdump.zip $tmpDir
+
+# Delete temp dir
+rm -rf $tmpDir
+
